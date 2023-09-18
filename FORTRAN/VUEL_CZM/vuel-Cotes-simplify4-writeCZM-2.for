@@ -11,7 +11,7 @@
        !real(kind = RK), parameter :: RTINY = tiny(temp)                                                                                                                                                                                                              
       end module
 
-      module math_mod                                                     !! »ù±¾µÄÊýÑ§º¯ÊýºÍÐÎº¯ÊýµÄÔËËãµÈ
+      module math_mod                                                     !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         include 'vaba_param.inc'
         private 
         public :: vector_cross, vector_dot, vector_mod, vector_unit
@@ -25,7 +25,7 @@
          !
          ! Remarks:
          !
-         !   RESULT = VEC1 ¡Á VEC2
+         !   RESULT = VEC1 ï¿½ï¿½ VEC2
          !
          ! Parameters:
          !
@@ -39,7 +39,7 @@
          dimension :: cross(3)
          cross(1) = vec1(2)*vec2(3) - vec1(3)*vec2(2)
          cross(2) = vec1(3)*vec2(1) - vec1(1)*vec2(3)
-         cross(3) = vec1(1)*vec2(2) - vec1(2)*vec2(1)!²æ»ý½á¹ûÏòÁ¿Èý¸öÖµsimon 2011-11-1
+         cross(3) = vec1(1)*vec2(2) - vec1(2)*vec2(1)!ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµsimon 2011-11-1
          return
      
         end subroutine vector_cross
@@ -65,7 +65,7 @@
           dot = vec1(1)*vec2(1) + vec1(2)*vec2(2) + vec1(3)*vec2(3)
           
           return
-         end subroutine vector_dot !µã»ý½á¹û
+         end subroutine vector_dot !ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
          function vector_mod( vec ) result( rmod )
          include 'vaba_param.inc'
@@ -117,7 +117,7 @@ c*****************************************************************************80
       !
       !    Output: DTDS(4), the S basis derivatives at the point.
       !
-      !! use system_constant   !use system_constant±ØÐëÔÚimplicit noneÇ°Ãæ
+      !! use system_constant   !use system_constantï¿½ï¿½ï¿½ï¿½ï¿½ï¿½implicit noneÇ°ï¿½ï¿½
       include 'vaba_param.inc'
       dimension ::  dtdr(4), dtds(4), t(4)
       parameter ( quarter = 0.25d0 )
@@ -155,12 +155,12 @@ c*****************************************************************************80
      *           normal,area,fc)  !! gpos, Hpos, fcount                                                                                                                                                                
       implicit none                                                                                                                                                                                                                                               
       integer,intent(in)::iDem, iFacet                                                                                                                                                                                                                            
-      real(kind=RK),intent(in):: gapVect(3)   !! gapVectÊÇ¸Ã¸ßË¹»ý·ÖµãÉÏµÄ·ÖÀëÁ¿ÏòÁ¿                                                                                                                                                                              
-      real(kind=RK),intent(in):: normal(3)    !! normalÊÇÖÐ¼äÃæÉÏ¸Ã¸ßË¹»ý·ÖµãÉÏµÄµ¥Î»·¨ÏòÁ¿                                                                                                                                                                       
-      !real(kind=RK),intent(in):: gpos(2)     !! gpos ¸ßË¹»ý·ÖµãµÄ×ÔÈ»×ø±ê                                                                                                                                                                                        
-      real(kind=RK),intent(in):: area         !! ¸ßË¹»ý·Öµã¶ÔÓ¦µÄÑÅ¿É±ÈÐÐÁÐÊ½Öµ£¬Ò²¾ÍÊÇÃæ»ý                                                                                                                                                                       
-      !real(kind=RK),intent(in):: Hpos(2)     !! HposÊÇ¸ßË¹»ý·ÖµãµÄÈ¨ÏµÊý                                                                                                                                                                                         
-      real(kind=RK),intent(out)::fc(3)      !!  fc ¸Ã»ý·ÖµãËã³öÀ´È«¾Ö×ø±êÏµÏÂµÄcohesive force                                                                                                                                                                     
+      real(kind=RK),intent(in):: gapVect(3)   !! gapVectï¿½Ç¸Ã¸ï¿½Ë¹ï¿½ï¿½ï¿½Öµï¿½ï¿½ÏµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                              
+      real(kind=RK),intent(in):: normal(3)    !! normalï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½Ï¸Ã¸ï¿½Ë¹ï¿½ï¿½ï¿½Öµï¿½ï¿½ÏµÄµï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                       
+      !real(kind=RK),intent(in):: gpos(2)     !! gpos ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                                        
+      real(kind=RK),intent(in):: area         !! ï¿½ï¿½Ë¹ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Å¿É±ï¿½ï¿½ï¿½ï¿½ï¿½Ê½Öµï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                       
+      !real(kind=RK),intent(in):: Hpos(2)     !! Hposï¿½Ç¸ï¿½Ë¹ï¿½ï¿½ï¿½Öµï¿½ï¿½È¨Ïµï¿½ï¿½                                                                                                                                                                                         
+      real(kind=RK),intent(out)::fc(3)      !!  fc ï¿½Ã»ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½Âµï¿½cohesive force                                                                                                                                                                     
       !integer,intent(inout)::fcount                                                                                                                                                                                                                              
       real(kind=RK)::tmod,nGap,ghis,tGap                                                                                                                                                                                                                          
       real(kind=RK)::co_sig(3),nGapVect(3),tGapVect(3),effDelta                                                                                                                                                                                                   
@@ -168,25 +168,25 @@ c*****************************************************************************80
       real(kind=RK)::deltai,deltaf,idis(3), gVect(3)                                                                                                                                                                                                              
       fc=0.0                                                                                                                                                                                                                                                      
       gVect = gapVect                                                                                                                                                                                                                                             
-      nGap=gVect(1)*normal(1)+gVect(2)*normal(2)+gVect(3)*normal(3) !! ·¨Ïò·ÖÀëÖµ                                                                                                                                                                               
-      nGapVect = nGap*normal          !! ·¨Ïò·ÖÀëÏòÁ¿ normal separation vector                                                                                                                                                                                    
-      tGapVect = gVect - nGapVect     !! ÇÐÏò·ÖÀëÏòÁ¿                                                                                                                                                                                                             
-      tGap = sqrt( tGapVect(1)*tGapVect(1)+tGapVect(2)*tGapVect(2)+tGapVect(3)*tGapVect(3) ) !! ÇÐÏò·ÖÀëÖµ                                                                                                                                                        
-      if(nGap<0.0)then !ÊÜÑ¹×´Ì¬                                                                                                                                                                                                                                  
+      nGap=gVect(1)*normal(1)+gVect(2)*normal(2)+gVect(3)*normal(3) !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ                                                                                                                                                                               
+      nGapVect = nGap*normal          !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ normal separation vector                                                                                                                                                                                    
+      tGapVect = gVect - nGapVect     !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                                                             
+      tGap = sqrt( tGapVect(1)*tGapVect(1)+tGapVect(2)*tGapVect(2)+tGapVect(3)*tGapVect(3) ) !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ                                                                                                                                                        
+      if(nGap<0.0)then !ï¿½ï¿½Ñ¹×´Ì¬                                                                                                                                                                                                                                  
          tfc=-abs(nGap)*m_stiff*area*normal                                                                                                                                                                                                                      
          fc=fc+tfc                                                                                                                                                                                                                                               
       end if                                                                                                                                                                                                                                                      
-      call calculate_effective_displacement_point(nGap,tGap,effDelta)  !! ¼ÆËãÓÐÐ§ÕÅ¿ªÁ¿                                                                                                                                                                          
+      call calculate_effective_displacement_point(nGap,tGap,effDelta)  !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½Å¿ï¿½ï¿½ï¿½                                                                                                                                                                          
       if(effDelta==0.0) return                                                                                                                                                                                                                                    
       call compute_input_coh_displacement(m_stiff, 
      *     m_nStrength,m_tStrength,m_GIc,m_GIIc,m_alpha,m_deltaNo,
-     *     m_deltaSo,tGap,nGap,deltai,deltaf) !! ¼ÆËã»ìºÏÈý½ÇÐÎµÄÁ½¸öÎ»ÒÆ                                                                                                                                                     
+     *     m_deltaSo,tGap,nGap,deltai,deltaf) !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½                                                                                                                                                     
       if(effDelta>=deltaf)then !failure of the gauss point.                                                                                                                                                                                                       
         !fcount=fcount+1                                                                                                                                                                                                                                        
         !call update_failure_value_of_gauss_integration_points(co_eid,ith)                                                                                                                                                                                      
         m_BindDem(iDem)%status(iFacet) = 2                                                                                                                                                                                                                      
       else                                                                                                                                                                                                                                                        
-        !call obtain_failure_values_of_gauss_integration_points(co_eid,ith,ghis=ghis) !! ghisÓÐÐ§ÕÅ¿ªÁ¿µÄÀúÊ·×î´óÖµ                                                                                                                                             
+        !call obtain_failure_values_of_gauss_integration_points(co_eid,ith,ghis=ghis) !! ghisï¿½ï¿½Ð§ï¿½Å¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½Öµ                                                                                                                                             
         ghis = m_bindDem(iDem)%maxEffGap(iFacet)                                                                                                                                                                                                                
         m_BindDem(iDem)%status(iFacet) = 1                                                                                                                                                                                                                      
         if(ghis<=effDelta)then                                                                                                                                                                                                                                  
@@ -194,7 +194,7 @@ c*****************************************************************************80
           m_bindDem(iDem)%maxEffGap(iFacet) = ghis                                                                                                                                                                                                            
           !call update_failure_delta_of_gauss_integration_points(co_eid,ith,ghis=ghis)                                                                                                                                                                        
         end if                                                                                                                                                                                                                                                  
-        call calculate_tangent_vector(tGapVect,tvect)  !! ¼ÆËãÇÐÏòµ¥Î»ÏòÁ¿                                                                                                                                                                                      
+        call calculate_tangent_vector(tGapVect,tvect)  !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                                      
         call cohesive_stress_at_one_point(m_stiff,deltai,deltaf,gVect,
      *       nGap,tGap,effDelta,ghis,normal,tvect,co_sig)                                                                                                                                                                      
         tfc = co_sig*area                                                                                                                                                                                                                                       
@@ -300,7 +300,7 @@ c*****************************************************************************80
                                                                                                                                                                                                                                                                         
       sig=0.0; dnsig=0.0; dtsig=0.0; coef=0.0                                                                                                                                                                                                                      
       !if(interface_failure/=1) then                                                                                                                                                                                                                               
-      if(ghis<=0.0) goto 111  !! !! ghisÓÐÐ§ÕÅ¿ªÁ¿µÄÀúÊ·×î´óÖµ                                                                                                                                                                                                 
+      if(ghis<=0.0) goto 111  !! !! ghisï¿½ï¿½Ð§ï¿½Å¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½Öµ                                                                                                                                                                                                 
       !end if                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                         
       !for reference: Wu L, Sket F, Molina-Aldareguia J M, et al. A study 
@@ -425,7 +425,7 @@ c*****************************************************************************80
       end subroutine                                                                                                                                                                                                                                                  
       end module                                                                                                                                                                                                                                                      
 
-      subroutine mass_matrix(nblock,rho,coords,ndofel,amass)          !! ¼ÆËãÖÊÁ¿¾ØÕó
+      subroutine mass_matrix(nblock,rho,coords,ndofel,amass)          !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
          use math_mod
          include 'vaba_param.inc'
          parameter ( eighth=0.125d0, thickness=1.d0)
@@ -453,7 +453,7 @@ c*****************************************************************************80
          end do
       end subroutine  
       
-      subroutine key_parameter(props,constant,rkn,rkt,strenthN,       !! ÊäÈëÐèÒªµÄ²ÎÊý
+      subroutine key_parameter(props,constant,rkn,rkt,strenthN,       !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ä²ï¿½ï¿½ï¿½
      * strenthT,strength,Gnc,Gtc,rho,exp,rknt, delta10,delta20,
      * delta1f,delta2f,gaussPara)
        include 'vaba_param.inc'
@@ -472,10 +472,10 @@ c*****************************************************************************80
          
          rknt=(/rkn,rkt/)  
          strength=(/strenthN,strenthT/)
-         delta10=strenthN/rkn                         !! ·¨Ïò³õÊ¼ËðÉË·ÖÀëÁ¿
-         delta20=strenthT/rkt                         !! ÇÐÏò³õÊ¼ËðÉË·ÖÀëÁ¿  
-         delta1f=two*Gnc/strenthN                     !! ·¨ÏòÍêÈ«ËðÉË·ÖÀëÁ¿
-         delta2f=two*Gtc/strenthT                     !! ÇÐÏòÍêÈ«ËðÉË·ÖÀëÁ¿
+         delta10=strenthN/rkn                         !! ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½
+         delta20=strenthT/rkt                         !! ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½  
+         delta1f=two*Gnc/strenthN                     !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½
+         delta2f=two*Gtc/strenthT                     !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½
          
          gaussPara(1:2,1)= (/-constant,  -constant /)
          gaussPara(1:2,2)= (/ constant,  -constant /)
@@ -486,7 +486,7 @@ c*****************************************************************************80
 
     
 
-c================================================VUEL×Ó³ÌÐò=========================================================
+c================================================VUELï¿½Ó³ï¿½ï¿½ï¿½=========================================================
       subroutine vuel(
      *     nblock,
 c          to be defined
@@ -544,7 +544,7 @@ c     energies
      *            iElDmd = 11,
      *            iElDc = 12,
      *            nElEnergy = 12)
-
+     
 c     predefined variables
       parameter ( iPredValueNew = 1,
      *            iPredValueOld = 2,
@@ -579,7 +579,7 @@ c
       if (jtype .eq. 2 .and.
      *    lflags(iProcedure).eq.jDynExplicit) then  
           
-          call key_parameter(props,constant,rkn,rkt,strenthN,          !! ²ÎÊý¸³Öµ
+          call key_parameter(props,constant,rkn,rkt,strenthN,          !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
      *                      strengthT,strength,Gnc,Gtc,rho,exp,rknt,
      *                  delta10,delta20,delta1f,delta2f,gaussPara)
 
@@ -590,7 +590,7 @@ c
      *             jIntForceAndDtStable) then  
              
            do kblock = 1, nblock
-               call seperation_and_middle_suface(u,coords,disNode,nGP, !! ¼ÆËãÖÐÐÔÃæµãµÄ×ø±êÒÔ¼°Ã¿¶Ô½ÚµãµÄ·Ö¿ªÁ¿
+               call seperation_and_middle_suface(u,coords,disNode,nGP, !! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½Ã¿ï¿½Ô½Úµï¿½Ä·Ö¿ï¿½ï¿½ï¿½
      *            kblock,nblock,ndofel,ncrd,nnode,uRelative,xyzMidsurf)
                 rNodeFc=zero
                 iNumber = 1
@@ -600,11 +600,11 @@ c
                     tau(1)=svars(kblock,iNumber+2)
                     tau(2) =svars(kblock,iNumber+3)
 
-               call shape_q4(gaussPara(1,iGp), gaussPara(2,iGp), !! ÇóÐÎº¯Êý¼°ÆäÆ«µ¼
+               call shape_q4(gaussPara(1,iGp), gaussPara(2,iGp), !! ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½
      *                           rShape, drds, drdt)
                call normal_seperation_and_shear_seperation_and_unitVect
      *                   (drds,drdt,xyzMidsurf,rShape,uRelative,
-     *                   vNormalMod,vNormal,shearUnit,uRelaLocal)      !! Çóµ¥Î»·¨ÏòÁ¿ºÍµ¥Î»ÇÐÏòÁ¿£¬ÇÐ·¨Ïò·ÖÀëÁ¿ l
+     *                   vNormalMod,vNormal,shearUnit,uRelaLocal)      !! ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ l
 
                call Constitutive( DMICRT,delta10,delta20,uRelaLocal,Gnc,
      *            Gtc,exp,delta2f,delta1f,rkn,OldSDEG,SDEG,tau,strength)
@@ -613,10 +613,10 @@ c
                    write(6,*) 'time(iTotalTime)',time(iTotalTime)
                    stop
                end if
-                    rNormaTauVect=tau(1)*vNormal                       !! ·¨ÏòÓ¦Á¦ÏòÁ¿
-                    rShearTauVect=tau(2)*shearUnit                     !! ÇÐÏòÓ¦Á¦ÏòÁ¿
-                    rTauVect=rNormaTauVect+rShearTauVect               !! ×ÜÓ¦Á¦ÏòÁ¿
-                    !!  ÓÉ»ý·ÖµãÓ¦Á¦²åÖµµÃµ½½ÚµãÁ¦ 
+                    rNormaTauVect=tau(1)*vNormal                       !! ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    rShearTauVect=tau(2)*shearUnit                     !! ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    rTauVect=rNormaTauVect+rShearTauVect               !! ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    !!  ï¿½É»ï¿½ï¿½Öµï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Öµï¿½Ãµï¿½ï¿½Úµï¿½ï¿½ï¿½ 
                     do i=1,nGP
                         rNodeGlobal=vNormalMod*rShape(i)*rTauVect
                         rNodeFc(1:3,i)=rNodeGlobal+rNodeFc(1:3,i)
@@ -627,10 +627,10 @@ c
                     svars(kblock,iNumber+3)=tau(2)
                     iNumber = iNumber + 4
                 end do
-              !! ÎÈ¶¨Ê±¼äÔöÁ¿
+              !! ï¿½È¶ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
               dtimeStable(kblock) = TimeIncrementMax
               !! write(17,*) time(iTotalTime)
-              !! Ëã³öµ¥Ôª8¸ö½ÚµãµÄ½ÚµãÁ¦
+              !! ï¿½ï¿½ï¿½ï¿½ï¿½Ôª8ï¿½ï¿½ï¿½Úµï¿½Ä½Úµï¿½ï¿½ï¿½
               iBgn = 1
               jBgn = iBgn + intervalU 
               do i=1,nGP
