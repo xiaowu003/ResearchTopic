@@ -1,3 +1,22 @@
+subroutine ComputeMassMatrix (                  &
+    nblock,rho,coords,ndofel,amass              &
+    )
+
+    !   Function:
+    !   calculate the mass matrix of cohesive element
+    !
+    !   Notices:
+    !   The area of a triangle can be calculated by the outer product of two vectors 
+    !
+    !   Parameters:
+    !   nblock  : the total number of units for which vuel is called this time
+    !   rho : ρ density
+    !   coords  : an array containing node coordinates, coords(a,b,c) : the c coordinate of the b node of the a element
+    !
+
+
+end subroutine ComputeMassMatrix
+
 ! ===================================== Obtain parameters from ABAQUS main program ========================
 subroutine GetParameter (                       &
     props,constant,                             &
@@ -92,7 +111,7 @@ subroutine vuel (                               &
         nTime      = 2                          &
     )
 
-    ! #BUG 这里的数字定义不完整，或者有些用不到
+! #BUG 这里的数字定义不完整，或者有些用不到
     dimension                                   &
         rhs(nblock,ndofel),                     &   
         amass(nblock,ndofel,ndofel),            &
@@ -113,13 +132,14 @@ subroutine vuel (                               &
         predef(nblock,nnode,npredef,nPred),     &
         adlmag(nblock)                          
 
-    ! #BUG 这里的jtyoe可能不是2，师兄的单元中是2，暂用2代替
+
+!#BUG 这里的jtyoe可能不是2，师兄的单元中是2，暂用2代替
     if ( jtype == 2 .and. lflags(iProcedure) == jDynExplicit ) then
         !! jtype == 2                               : determines if the element type matches
         !! lflags(iProcedure) == jDynExplicit       : direct integration explicit dynamic analysis
 
         !! parameter  assignment
-        ! #TODO 完成参数赋值操作
+!#TODO 完成参数赋值操作
         call GetParameter(                              &
             props,constant,rkn,rkt,strengthN,           &
             trengthT,strength,Gnc,Gtc,rho,exp,rknt,     &

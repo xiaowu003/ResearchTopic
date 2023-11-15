@@ -36,7 +36,7 @@
          !
          !! use system_constant
          include 'vaba_param.inc'
-         dimension :: vec1(3), vec2(3)
+         dimension :: vec1(3), vec2(3)            !!两个三行一列的一维列向量
          dimension :: cross(3)
      
          cross(1) = vec1(2)*vec2(3) - vec1(3)*vec2(2)
@@ -70,7 +70,7 @@
           return
          end subroutine vector_dot !点积结果
         
-         function vector_mod( vec ) result( rmod )
+         function vector_mod( vec ) result( rmod )                    !取模运算
          include 'vaba_param.inc'
          dimension :: vec(3)
          rmod = sqrt( vec(1)*vec(1) + vec(2)*vec(2) + vec(3)*vec(3) )
@@ -519,7 +519,7 @@ C
        end subroutine 
 
 !! ========================= 计算质量矩阵 ================================
-      subroutine Mass_matrix(nblock,rho,coords,ndofel,amass)          
+      subroutine mass_matrix(nblock,rho,coords,ndofel,amass)          
       
          use math
          include 'vaba_param.inc'
@@ -530,21 +530,22 @@ C
          dimension EleCoordVector(3,3),V1(3),V2(3)            !单元坐标的向量
  
          do kblock = 1, nblock
-             EleCoordVector(1,:)=coords(kblock,2,:)-coords(kblock,1,:)
-             EleCoordVector(2,:)=coords(kblock,3,:)-coords(kblock,1,:)
-             EleCoordVector(3,:)=coords(kblock,4,:)-coords(kblock,1,:)
+             EleCoordVector(1,:)=coords(kblock,2,:)-coords(kblock,1,:)      !节点2与节点1的xyz三坐标差值，即节点2的以节点1为原点的向量表示
+             EleCoordVector(2,:)=coords(kblock,3,:)-coords(kblock,1,:)      !同上，节点3相对于节点1的向量表示
+             EleCoordVector(3,:)=coords(kblock,4,:)-coords(kblock,1,:)      !节点4相对于节点1的向量表示
              call vector_cross(EleCoordVector(1,:),EleCoordVector(2,:),
-     *       V1)  
-             S1= half*vector_mod( V1 )
+     *       V1)                                                             !v1为节点2和3的外积
+! #TAG 这里计算三角形面积的方法可以用到
+             S1= half*vector_mod( V1 )                                       !利用外积计算三角形面积
              call vector_cross(EleCoordVector(2,:),EleCoordVector(3,:),
-     *       V2)
+     *       V2)                                                             !v2为节点3和4的外积
              S2= half*vector_mod( V2 )
              S=S1+S2
-             Volume=m_thickness*S
-             ElementMass=Volume*rho
-             am0=eighth*ElementMass
+             Volume=m_thickness*S                                 ! 计算体积？ m_thickness 为厚度
+             ElementMass=Volume*rho                                !计算质量？ rho 为密度？
+             am0=eighth*ElementMass                                ! 8节点，所以乘0.125，相当于除以8，为每个节点的等效质量
              do i=1,ndofel
-                 amass(kblock,i,i) = am0
+                 amass(kblock,i,i) = am0                           !给 nblock 中的第 kblock 个单元的每个节点赋值，am0
              end do
          end do
       end subroutine  
