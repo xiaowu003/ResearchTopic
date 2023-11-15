@@ -17,7 +17,7 @@
         public :: vector_cross, vector_dot, vector_mod, vector_unit
         public :: shape_q4
       contains
-       subroutine vector_cross( vec1, vec2 , cross) 
+       subroutine vector_cross( vec1, vec2 , cross) !计算两个向量的外积：列向量 * 行向量
        
          !
          ! Function:
@@ -518,15 +518,16 @@ C
        return
        end subroutine 
 
-      subroutine Mass_matrix(nblock,rho,coords,ndofel,amass)          !! 计算质量矩阵
+!! ========================= 计算质量矩阵 ================================
+      subroutine Mass_matrix(nblock,rho,coords,ndofel,amass)          
       
          use math
          include 'vaba_param.inc'
          parameter ( half = 0.5d0, eighth=0.125d0, one=1.d0)
          parameter ( nnode=8, ncrd=3)
          dimension amass( nblock,ndofel,ndofel )
-         dimension coords( nblock,nnode,ncrd )
-         dimension EleCoordVector(3,3),V1(3),V2(3)
+         dimension coords( nblock,nnode,ncrd )                ! elements coordinate
+         dimension EleCoordVector(3,3),V1(3),V2(3)            !单元坐标的向量
  
          do kblock = 1, nblock
              EleCoordVector(1,:)=coords(kblock,2,:)-coords(kblock,1,:)
@@ -547,15 +548,19 @@ C
              end do
          end do
       end subroutine  
-      
+
+
+
+!!============================ 将材料属性等值传入 ================================
       subroutine key_parameter(props,constant,rkn,rkt,strenthN,       !! 输入需要的参数
-     *                           strenthT,strength,Gnc,Gtc,rho,exp,rknt,
+     *                           strenthT,strength,Gnc,Gtc,rho,exp,rknt, 
      *                        delta10,delta20,delta1f,delta2f,gaussPara)
       
        include 'vaba_param.inc'
        parameter ( two=2.d0 )
        dimension props(8),rknt(2),strength(2),gaussPara(2,4)
          
+       !分别给8个变量赋予8个材料属性
          rkn = props(1)
          rkt = props(2)
          strenthN = props(3)
@@ -565,20 +570,24 @@ C
          rho = props(7)
          exp = props(8)
          
-         rknt=(/rkn,rkt/)  
-         strength=(/strenthN,strenthT/)
+         rknt=(/rkn,rkt/)                              !创建一个包含两个元素的数组，第一个为rkn，第二个为rkt
+         strength=(/strenthN,strenthT/)                !同上
          delta10=strenthN/rkn                         !! 法向初始损伤分离量
          delta20=strenthT/rkt                         !! 切向初始损伤分离量  
          delta1f=two*Gnc/strenthN                     !! 法向完全损伤分离量
          delta2f=two*Gtc/strenthT                     !! 切向完全损伤分离量
-         
-         gaussPara(1:2,1)= (/-constant,  -constant /)
+        
+         !gaussPara是一个两行四列的数组
+         gaussPara(1:2,1)= (/-constant,  -constant /)   !数组切片并赋值，表示gausspara的前两行，第一列，分别赋值后面两个
          gaussPara(1:2,2)= (/ constant,  -constant /)
          gaussPara(1:2,3)= (/ constant,   constant /)
          gaussPara(1:2,4)= (/-constant,   constant /)
 
-       end subroutine      
+       end subroutine 
+       
+       
 
+!===================================================================================================
       subroutine seperation_and_middle_suface(u,coords,disNode,       !! 计算中性面上点的坐标和节点分离量   
      * nGP,kblock,nblock,ndofel,ncrd,nnode,uRelative,xyzMidsurf)      
       
@@ -601,7 +610,9 @@ C
              end do
              return
       end subroutine
-     
+
+
+!=====================================================================================================   
       subroutine normal_seperation_and_shear_seperation_and_unitVect  !! 计算切法向分离量和切法向单位向量
      *    (drds,drdt,xyzMidsurf,rShape,uRelative,
      *     vNormalMod,vNormal,shearUnit,uRelaLocal)
@@ -687,7 +698,7 @@ c     time
      *           nTime      = 2)
 
 c     procedure flags
-      parameter ( jDynExplicit = 17 )
+      parameter ( jDynExplicit = 17 )                       !这里表示非线性的直接积分的显示动态过程分析
 
 c     energies 
       parameter ( iElPd = 1,
@@ -739,7 +750,7 @@ c
      *    lflags(iProcedure).eq.jDynExplicit) then  
           
           call key_parameter(props,constant,rkn,rkt,strenthN,          !! 参数赋值
-     *                      strengthT,strength,Gnc,Gtc,rho,exp,rknt,
+     *                      strenthT,strength,Gnc,Gtc,rho,exp,rknt,
      *                  delta10,delta20,delta1f,delta2f,gaussPara)
 
          if ( lflags(iOpCode).eq.jMassCalc ) then  

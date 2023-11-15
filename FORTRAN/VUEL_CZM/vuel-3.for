@@ -423,8 +423,11 @@ c*****************************************************************************80
        end if                                                                                                                                                                                                                                                      
        return                                                                                                                                                                                                                                                      
       end subroutine                                                                                                                                                                                                                                                  
-      end module                                                                                                                                                                                                                                                      
+      end module    
+      
+      
 
+!=========================================================================================
       subroutine mass_matrix(nblock,rho,coords,ndofel,amass)          !! ������������
          use math_mod
          include 'vaba_param.inc'
@@ -452,7 +455,9 @@ c*****************************************************************************80
              end do
          end do
       end subroutine  
+
       
+!============================================================================
       subroutine key_parameter(props,constant,rkn,rkt,strenthN,       !! ������Ҫ�Ĳ���
      * strenthT,strength,Gnc,Gtc,rho,exp,rknt, delta10,delta20,
      * delta1f,delta2f,gaussPara)

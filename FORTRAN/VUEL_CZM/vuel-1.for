@@ -93,6 +93,7 @@
          end subroutine
         
       function vector_mod( vec ) result(rmod)
+      !取模运算
       implicit none
       real(kind=RK) :: vec(3)
       real(kind=RK) :: rmod
@@ -101,6 +102,7 @@
       end function 
 
       subroutine vector_unit( vec )
+      !计算单位向量
       implicit none
       real(kind=RK),intent(inout):: vec(3)
       real(kind=RK), parameter :: TINY = 1.0e-25
@@ -114,7 +116,8 @@
       return
       end subroutine
  
-      subroutine shap_function_derivative(gpos,dshap1,dshap2)  
+      subroutine shap_function_derivative(gpos,dshap1,dshap2)
+      !形函数的导数  
       implicit none
       real(kind=RK),intent(in)::gpos(2)
       real(kind=RK),intent(out)::dshap1(4),dshap2(4)
@@ -137,6 +140,7 @@
       end subroutine
          
       subroutine shape_q4 ( r, s, t )
+      !计算4节点参考4边形的形状函数
       implicit none
 c*****************************************************************************80
       !
@@ -181,7 +185,8 @@ c*****************************************************************************80
       public :: calculate_effective_displacement_point                                                                                                                                                                                 
       public :: calculate_tangent_vector
       character(len=MNL) :: msg                                                                                                                                                                                                                                      
-      contains                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+      contains  
+
       subroutine compute_input_coh_displacement(stiff,nStreng,
      * tStreng,GN,GS,alfa,deltaNo,deltaSo,tdelta,ndelta,deltai,deltaf)                                                                                                                                                                                           
       implicit none                                                                                                                                                                                                                                               
@@ -322,7 +327,8 @@ c*****************************************************************************80
       stop                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
       end subroutine                                                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                                         
-      subroutine calculate_tangent_vector(tdelta,tvect)                                                                                                                                                                                                              
+      subroutine calculate_tangent_vector(tdelta,tvect)
+      !计算切向量                                                                                                                                                                                                              
       implicit none                                                                                                                                                                                                                                               
       real(kind=RK),intent(in)::tdelta(3)                                                                                                                                                                                                                         
       real(kind=RK),intent(out)::tvect(3)                                                                                                                                                                                                                         
