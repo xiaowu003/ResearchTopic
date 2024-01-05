@@ -88,10 +88,10 @@ module math_mod
         !  Vec2, input, an array of rank one with 3 elements.
         !  DOT, output, an array of rank one with 3 elements.
 
-        real(kind=RK),intent(in):: vec1(3), vec2(3)
+        real(kind=RK),intent(in) :: vec1(3), vec2(3)
         real(kind=RK),intent(out):: dot
 
-        dot=vec1(1)*vec2(1) + vec1(2)*vec2(2)+vec1(3)*vec2(3)
+        dot=vec1(1)*vec2(1) + vec1(2)*vec2(2) + vec1(3)*vec2(3)
         return
     end subroutine vector_dot
       
@@ -101,21 +101,21 @@ module math_mod
         real(kind=RK) :: vec(3)
         real(kind=RK) :: rmod
 
-        rmod = sqrt( vec(1)*vec(1)+vec(2)*vec(2)+vec(3)*vec(3) )
+        rmod = sqrt( vec(1)*vec(1) + vec(2)*vec(2) + vec(3)*vec(3) )
         return
     end function vector_mod
 
     subroutine vector_unit( vec )
         implicit none
-        real(kind=RK),intent(inout):: vec(3)
+        real(kind=RK), intent(inout) :: vec(3)
         real(kind=RK), parameter :: TINY = 1.0e-25
         real(kind=RK) :: rmod
 
         rmod = sqrt( vec(1)*vec(1) + vec(2)*vec(2) + vec(3)*vec(3) )
 
-        if( rmod<TINY)then
-          write(6,*)'Error in vector_unit:the rmod of the vector is 0.'
-          call xplb_exit
+        if( rmod < TINY) then
+            write(6,*)'Error in vector_unit:the rmod of the vector is 0.'
+            call xplb_exit
         end if
 
         vec = vec/rmod
@@ -185,9 +185,8 @@ module cohesive_law_mod
     character(len=MNL) :: msg
     contains
     
-    subroutine compute_input_coh_displacement(stiff,nStreng, &
-        tStreng,GN,GS,alfa,deltaNo,deltaSo,tdelta,ndelta,deltai,deltaf)
-
+    subroutine compute_input_coh_displacement(stiff,nStreng,tStreng,GN,GS,alfa,deltaNo,deltaSo,tdelta,ndelta,deltai,deltaf) !! 计算单元开始损伤时的分离量和完全损伤时的分离量
+        
         implicit none
         real(kind=RK),intent(in) :: stiff !!法向罚刚度
         real(kind=RK),intent(in) :: nStreng !!拉伸强度
@@ -223,11 +222,10 @@ module cohesive_law_mod
             if(deltai<=0.0d0) goto 222
             if(tStreng<=0.0d0) goto 111
 
-            deltaf=2.0d0*Gs/tStreng !final displacement of the mixed mode.  !! Gs: G2c; Gn: G1c; 
-                                    !! #bug 与论文中公式有所不同,  
+            deltaf=2.0d0 * Gs / tStreng !final displacement of the mixed mode.  !! Gs: G2c; Gn: G1c; #bug 与论文中公式有所不同,  
         else
             !effective displacement at transition point of the mixed triangle.
-            deltai=deltaNo*deltaSo*sqrt( (1+beita2)/( beita2*deltaNo*deltaNo+deltaSo*deltaSo) )  !混合模式 开始损伤时分离量 计算公式
+            deltai = deltaNo * deltaSo * sqrt( (1+beita2) / ( beita2*deltaNo*deltaNo + deltaSo*deltaSo) )  !混合模式 开始损伤时分离量 计算公式
 
             if(deltai<=0.0d0) goto 222
             if(stiff<=0.0d0) goto 333
@@ -238,24 +236,24 @@ module cohesive_law_mod
 
             gna=(1.0d0/GN)**alfa; gta=(beita2/GS)**alfa
             alfam=-1.0d0/alfa
-            deltaf=deltaf*(gna+gta)**alfam !final displacement of the mixed mode.
+            deltaf=deltaf * (gna+gta)**alfam !final displacement of the mixed mode.
 
         end if
         return
 
-111     continue
+        111 continue
         msg='Negative tstrength in compute_input_coh_displacement.'
         write(6,*) msg
         call xplb_exit
-222     continue
+        222 continue
         msg='Negative deltai in compute_input_coh_displacement.'
         write(6,*) msg
         call xplb_exit
-333      continue
+        333 continue
         msg='Negative stiffness in compute_input_coh_displacement.'
         write(6,*) msg
         call xplb_exit
-444      continue
+        444 continue
         msg='Negative GN or GS in compute_input_coh_displacement.'
         write(6,*) msg
         call xplb_exit
@@ -295,10 +293,10 @@ module cohesive_law_mod
         !integer,intent(in)::co_eid, gith
         real(kind=RK),intent(out):: fail            !!失效标志
         real(kind=RK),intent(out):: sig(3)          !!计算得到的应力
-        real(kind=RK):: nsig(3)
+        real(kind=RK):: nsig(3)                     !!刚度 * 法向分离量 = 法向应力
         real(kind=RK):: tsig(3)
-        real(kind=RK):: dnsig                       !!法向应力 = 刚度 * 分离量
-        real(kind=RK):: dtsig
+        real(kind=RK):: dnsig                       !!开始损伤后的法向应力 = 刚度 * 法向分离量 * (1 - d)
+        real(kind=RK):: dtsig                       !!开始损伤后的切向应力 = 刚度 * 切向分离量 * (1 - d)
         real(kind=RK):: det
         real(kind=RK):: temp
         real(kind=RK):: eta
@@ -309,7 +307,7 @@ module cohesive_law_mod
         real(kind=RK):: rtvect(3)
         real(kind=RK), parameter::tol=1.0e-15
         real(kind=RK):: nsig0, tsig0, effsig0 !normal and tangential stress components at the transition point in a TSL.
-        real(kind=RK):: coef=0.0d0
+    real(kind=RK):: coef=0.0d0                      !!损伤变量D，#bug 这里为什么将它初始化为0？
         
         fail    =   0.0d0
         sig     =   0.0d0
@@ -318,7 +316,7 @@ module cohesive_law_mod
         coef    =   0.0d0
 
         !if(interface_failure/=1) then
-        if(ghis<=0.0d0) goto 111
+        if(ghis <= 0.0d0) goto 111
         !end if
 
         !for reference: Wu L, Sket F, Molina-Aldareguia J M, et al. A study 
@@ -331,28 +329,28 @@ module cohesive_law_mod
         if(ghis<=deltai) then
             if(det_ndelta>0.0d0) then
                 !!弹性阶段
-                nsig = stiff*det_ndelta
+                nsig = stiff * det_ndelta
             end if
 
-            dtsig = stiff*det_tdelta    !#bug 这里的刚度和计算法向应力的shift刚度一样吗？
+            dtsig = stiff * det_tdelta    !#bug 这里的刚度和计算法向应力的shift刚度一样吗？
 
-        else if(ghis>deltai.and.ghis<=deltaf) then
+        else if(ghis > deltai .and. ghis <= deltaf) then
             !!损伤阶段
-            fail    =   1.01d0
-            coef    =   deltaf/ghis
-            coef    =   coef*(ghis-deltai)/(deltaf-deltai)
+            fail = 1.01d0
+            coef = deltaf / ghis
+            coef = coef * (ghis-deltai) / (deltaf-deltai)  ! Damage variable calculation formula
 
-            if(det_ndelta>0.0d0) then
-                dnsig = (1-coef)*stiff*det_ndelta
+            if(det_ndelta > 0.0d0) then
+                dnsig = (1.0d0 - coef) * stiff * det_ndelta   ! #bug 这里从1改成了1.0d0
             end if
 
-            dtsig = (1.0d0-coef)*stiff*det_tdelta
+            dtsig = (1.0d0 - coef) * stiff * det_tdelta
         end if
         !else
         !goto 555
         !end if
 
-        modu = sqrt(delta(1)*delta(1)+delta(2)*delta(2)+delta(3)*delta(3))
+        modu = sqrt(delta(1)*delta(1) + delta(2)*delta(2) + delta(3)*delta(3))
 
         if(modu<=0.0d0) goto 222
 
@@ -367,21 +365,21 @@ module cohesive_law_mod
 
         call vector_dot(tvect,bvect,det)
 
-        if(det_ndelta>0.0d0) then
-            nsig = dnsig*rnvect
+        if(det_ndelta > 0.0d0) then
+            nsig = dnsig * rnvect
         else
             nsig = 0.0d0
         end if
 
-        tsig = dtsig*rtvect
-        sig  = nsig+tsig
+        tsig = dtsig * rtvect
+        sig  = nsig + tsig
         return
 
-111     continue
+        111 continue
         msg='Negative ghis in cohesive_stress_at_one_point.'
         write(6,*) msg
         call xplb_exit
-222     continue
+        222 continue
         msg='Zero mod in cohesive_stress_at_one_point.'
         write(6,*) msg
         call xplb_exit
@@ -394,9 +392,8 @@ module cohesive_law_mod
         real(kind=RK)::det
         real(kind=RK),parameter::tol=1.0e-16
 
-        det = sqrt(tdelta(1)*tdelta(1)+tdelta(2)*tdelta(2)+  &
-            tdelta(3)*tdelta(3))
-        if(det<tol) then  !若分离量 极小 直接当做 分离量为0 进行计算？
+        det = sqrt(tdelta(1)*tdelta(1) + tdelta(2)*tdelta(2) + tdelta(3)*tdelta(3))
+        if(det < tol) then  !若分离量 极小 直接当做 分离量为0 进行计算？
             tvect=(/0.0d0 ,0.0d0, 0.0d0/)
             return
         end if
@@ -412,11 +409,12 @@ module cohesive_law_mod
         implicit none
         real(kind=RK),intent(in) :: stiff
         real(kind=RK),intent(in) :: nstreng, tstreng
-        real(kind=RK),intent(out)::delta_no,delta_so
+        real(kind=RK),intent(out):: delta_no,delta_so
         real(kind=RK),save::no=0.0d0,so=0.0d0
         integer,save::count=0
         if(count>0) then
-            delta_no=no; delta_so=so
+            delta_no=no
+            delta_so=so
             return
         end if
 
@@ -430,7 +428,7 @@ module cohesive_law_mod
         delta_so = so
         return
 
-111     continue
+        111 continue
         msg='Nagetive stiffness in obtain_transition_value.'
         write(6,*) msg
         call xplb_exit
@@ -544,9 +542,9 @@ module cohesive_element_mod
         integer, intent(in) :: nVar                     !!nvar是var数组的个数，即svars中值个数
         real(kind=RK),intent(in) :: u(nDofCoh)          !!单元各节点，个自由度方向的变化，如x y z 三方向的位移，若是温度，可能是温度差值? #todo
         real(kind=RK),intent(in) :: coords(nNdCoh,nDim) !!坐标(8,3)
-        real(kind=RK),intent(out) :: var(nvar)          !!svars值传给var,即自定义接变量sdv值,  var(1)为失效标识，为2时表示完全失效
+        real(kind=RK),intent(out) :: var(nvar)          !!svars值传给var,即自定义接变量sdv值,  var(1)为element失效标识，为2时表示完全失效
 
-        real(kind=RK),intent(out) :: fcNd(nDim,nNdCoh)  !! #bug (3,8) may be not allowed, value range error
+        real(kind=RK),intent(out) :: fcNd(nDim,nNdCoh)  !! =rhs array #bug (3,8) may be not allowed, value range error， 这里传入的是(1,24),但是定义成(3,8)
 
         real(kind=RK):: normal(3)   !!法向量, The unit normal vector at Gaussian point
         real(kind=RK):: det         !! The length of normal vector， it is also an area of the middle plane
@@ -565,13 +563,13 @@ module cohesive_element_mod
         real(kind=RK) :: fcAdd(3,4)
         real(kind=RK) :: fcPt(3)
 
-        if( nVar<nInteg2D*2+1 ) goto 111
+        if( nVar < nInteg2D * 2 + 1 ) goto 111
 
-        failElem = var(1)        
+        failElem = var(1)
         
-        if( failElem>=2 ) return  ! element complete failure  #bug 为什么大于等于2 就判定完全失效,
+        if( failElem >= 2 ) return  ! element complete failure
 
-        call seperation_and_middle_suface(u,coords,gapNd,xyzMid)
+        call seperation_and_middle_surface(u,coords,gapNd,xyzMid)
         fcNd    = 0.0d0
         fcount  = 0
         ibgn    = 2
@@ -579,9 +577,11 @@ module cohesive_element_mod
         do i=1,nInteg2D
 
             fail = var(ibgn) ! Here ibgn can be 2, 4, 6, 8
-
+            
+            !First, determine whether the integration point is in failure.
             if( fail>=2 ) then
-                fcount=fcount+1; cycle  !means this gauss point is in failure.
+                fcount = fcount + 1 !means this gauss point is in failure.
+                cycle   !end this loop, begin next loop
             end if
 
             xi = xiGaussPoint(:,i) !第 i 列
@@ -592,33 +592,33 @@ module cohesive_element_mod
             !co_eid,ith,fail=fail)
             
             iEffGap = ibgn+1  ! Here iEffGap can be 3, 5, 7, 9
-            maxEffGap = var(iEffGap)
+            maxEffGap = var(iEffGap)  !The maxEffGap here is the data from the previous step
             
             call one_point_cohesive_force(det,fCount,maxEffGap,gapPt,normal,fail,fcPt)
             
-            var(iEffGap) = maxEffGap
+            var(iEffGap) = maxEffGap   !The maxEffGap here is the updated data.
             var(ibgn) = fail
             
             call distribute_force_to_nodes(xi,fcPt,fcAdd)
             
-            fcNd(:,1:nHalfNd)=fcNd(:,1:nHalfNd)+fcAdd
+            fcNd(:,1:nHalfNd) = fcNd(:,1:nHalfNd) + fcAdd
             ibgn = ibgn + 2
         end do
 
         fcNd(:,nHalfNd+1:nNdCoh) = fcNd(:,1:nHalfNd)
         fcNd(:,1:nHalfNd)  = -fcNd(:,1:nHalfNd)
 
-        if( fCount==nInteg2D ) var(1) = 2.01d0          !单元以完全失效，设置失效标识 var(1) = 2.01d0
+        if( fCount == nInteg2D ) var(1) = 2.01d0          !单元以完全失效，设置失效标识 var(1) = 2.01d0
         return
 
-111     continue
+        111 continue
         msg='Wrong length of svars in one_element_cohesive_force.'
         write(6,*) msg
         call xplb_exit
         return
     end subroutine one_element_cohesive_force
 
-    subroutine distribute_force_to_nodes(xi,fcPt,fcNd)    
+    subroutine distribute_force_to_nodes(xi,fcPt,fcNd)
         implicit none
         real(kind=RK),intent(in)::xi(2), fcPt(3)
         real(kind=RK),intent(out)::fcNd(3,4)
@@ -647,8 +647,7 @@ module cohesive_element_mod
 
         gapPoint = 0.0d0
         do i = 1, nHalfNd
-            gapPoint = gapPoint+t(i)*gapNd(:,i) !#bug 这里是获得加权平均的分离量？实际上形函数只在该（不是高斯点）积分点位置为1，其他位置为0，
-                                                !所以加权平均就是该（不是高斯点）积分点位置的分离量        
+            gapPoint = gapPoint + t(i) * gapNd(:,i) !#bug 这里是获得加权平均的分离量？实际上形函数只在该（不是高斯点）积分点位置为1，其他位置为0,所以加权平均就是该（不是高斯点）积分点位置的分离量        
         end do
         return
     end subroutine calculate_gap_at_integration_point
@@ -673,7 +672,7 @@ module cohesive_element_mod
         normal  = normal/tMod                   !将法向量转化为单位法向量
         return
 
-333     continue
+        333 continue
         msg='Negative tmod in get_unit_normal_vector'
         write(6,*) msg
         call xplb_exit
@@ -700,7 +699,7 @@ module cohesive_element_mod
         return
     end subroutine calculate_tangential_vector
 
-    subroutine seperation_and_middle_suface(u,coords,gap,xyzMidsurf)     !!计算中间接截面节点坐标，以及上下节点间距向量
+    subroutine seperation_and_middle_surface(u,coords,gap,xyzMidsurf)     !!计算中间接截面节点坐标，以及上下节点间距向量
         implicit none
         real(kind=RK), intent(in) :: u(nDofCoh)             !!u(24)
         real(kind=RK), intent(in) :: coords(nNdCoh,nDim)    !!coords(8,3)
@@ -720,12 +719,11 @@ module cohesive_element_mod
            gap(:,k)=disNode(:,k+nInteg2D)-disNode(:,k)  !上下对应节点坐标值相减，为上下节点间距向量，为下方节点指向上方节点的向量
         end do
         return
-    end subroutine seperation_and_middle_suface
+    end subroutine seperation_and_middle_surface
 
-    subroutine one_point_cohesive_force(area,fCount,ghis,gapVect,  &
-        normal,fail,fc)  !! gpos, Hpos, fcount
+    subroutine one_point_cohesive_force(area,fCount,ghis,gapVect,normal,fail,fc)  !! gpos, Hpos, fcount
         implicit none
-        real(kind=RK),intent(in):: area         !! the area of middle suface
+        real(kind=RK),intent(in):: area         !! the area of middle surface
         real(kind=RK),intent(in):: gapVect(3)   !! It is acutally gapNd, which is the vector from the bottom node at the Gaussian point to the upper onde.
         real(kind=RK),intent(in):: normal(3)    !! The unit normal vector at the Gaussian point.
         integer, intent(inout) :: fCount 
@@ -742,55 +740,54 @@ module cohesive_element_mod
         real(kind=RK) :: nGapVect(3)        !!normal separation vector
         real(kind=RK) :: tGapVect(3)        !!通过向量首尾相连的理论，获得切向量
         real(kind=RK) :: effDelta           !!合成的总分离量
-        real(kind=RK) :: tfc(3)     !!临时储存力的值
-        real(kind=RK) :: tvect(3)   !!计算得出单位切向量
-        real(kind=RK) :: deltai     !!开始损伤分离量
-        real(kind=RK) :: deltaf     !!完全失效分离量
-        real(kind=RK) :: gVect(3)   !! =gapVect, the vector from the lower node to the upper node at the Gaussian point.
+        real(kind=RK) :: tfc(3)             !!临时储存力的值
+        real(kind=RK) :: tvect(3)           !!计算得出单位切向量
+        real(kind=RK) :: deltai             !!开始损伤分离量
+        real(kind=RK) :: deltaf             !!完全失效分离量
+        real(kind=RK) :: gVect(3)           !! =gapVect, the vector from the lower node to the upper node at the Gaussian point.
 
         fc      = 0.0d0
         gVect   = gapVect
-        nGap    = gVect(1)*normal(1)+gVect(2)*normal(2)+gVect(3)*normal(3) ! 法向分离量（间隔量？） The component of gVect in the direction of the unit normal vector of the Gaussian point
-        nGapVect = nGap*normal          !normal separation vector
+        nGap    = gVect(1)*normal(1) + gVect(2)*normal(2) + gVect(3)*normal(3) ! 法向分离量（间隔量？） The component of gVect in the direction of the unit normal vector of the Gaussian point
+        nGapVect = nGap * normal          !normal separation vector
         tGapVect = gVect - nGapVect     !通过向量首尾相连的理论，获得切向量
-        tGap = sqrt( tGapVect(1)*tGapVect(1)+tGapVect(2)*tGapVect(2)+ &
-            tGapVect(3)*tGapVect(3) )   !得到上下两个节点间的切向分离量
+        tGap = sqrt( tGapVect(1)*tGapVect(1) + tGapVect(2)*tGapVect(2) + tGapVect(3)*tGapVect(3) )   !得到上下两个节点间的切向分离量
 
-        if(nGap<0.0) then               !单位法向量与下节点指向上节点的向量方向不同，角度超过90度， 发生了穿透所以用 罚函数法 限制穿透
+        if(nGap < 0.0) then               !单位法向量与下节点指向上节点的向量方向不同，角度超过90度， 发生了穿透所以用 罚函数法 限制穿透
             tfc = -abs(nGap) * m_stiff * area * normal  ! 这里计算出来的是什么？ --罚函数法 得到的法向力
-            fc  = fc+tfc
+            fc  = fc + tfc
         end if
 
         call calculate_effective_displacement_point(nGap,tGap,effDelta)  !计算总分离量，不是法向或切向，是合成的总分离量
-        if(effDelta<=0.0d0) return
+        if(effDelta <= 0.0d0) return
 
         call compute_input_coh_displacement(m_stiff,m_nStrength,m_tStrength,m_Gnc,m_Gtc,m_alpha,m_deltaNo,m_deltaSo,tGap,nGap,deltai,deltaf)
 
-        if(effDelta>=deltaf)then !failure of the gauss point.
-            fCount = fCount+1
+        if(effDelta >= deltaf)then !failure of the gauss point.
+            fCount = fCount + 1
             ghis   = effDelta
             !m_BindDem(iDem)%status(iFacet) = 2
-            fc     = 0.0d0
+            fc     = 0.0d0      !该积分点已完全失效，故不承力
             fail   = 2.01d0
         else
             !m_BindDem(iDem)%status(iFacet) = 1
-            if(ghis<=effDelta)then
-              ghis = effDelta  !更新实际分离量
-              !m_bindDem(iDem)%maxEffGap(iFacet) = ghis
+            if(ghis <= effDelta)then
+                ghis = effDelta  !更新实际分离量
+                !m_bindDem(iDem)%maxEffGap(iFacet) = ghis
             end if
 
             call calculate_tangent_vector(tGapVect,tvect)  !!计算出单位切向量
             call cohesive_stress_at_one_point(m_stiff,deltai,deltaf,gVect,nGap,tGap,effDelta,ghis,normal,tvect,fail,co_sig)
-            tfc = co_sig*area
+            tfc = co_sig * area
             fc = fc + tfc
         end if
         return
 
-111     continue
+        111 continue
         msg='mistake of the value of effDelta. in one_point_bind_force'
         write(6,*) msg
         call xplb_exit
-222     continue
+        222 continue
         msg='mistake of the value of ghis. in one_point_bind_force'
         write(6,*) msg
         call xplb_exit
@@ -798,21 +795,7 @@ module cohesive_element_mod
 end module cohesive_element_mod
 
 !================================================VUEL=========================================================
-    subroutine vuel(                                                &
-        nblock,                                                     &
-        rhs,amass,dtimeStable,                                      &
-        svars,nsvars,                                               &
-        energy,                                                     &          
-        nnode,ndofel,                                               &
-        props,nprops,                                               &
-        jprops,njprops,                                             &
-        coords,ncrd,                                                &
-        u,du,v,a,                                                   &
-        jtype,jelem,                                                &
-        time,period,dtimeCur,dtimePrev,kstep,kinc,lflags,           &
-        dMassScaleFactor,                                           &
-        predef,npredef,                                             &
-        jdltyp,adlmag)
+    subroutine vuel(nblock,svars,nsvars,energy,nnode,ndofel,props,nprops,jprops,njprops,coords,ncrd,u,du,v,a,jtype,jelem,time,period,dtimeCur,dtimePrev,kstep,kinc,lflags,dMassScaleFactor,predef,npredef,jdltyp,adlmag)
 
 !       used module
         use system_constant
@@ -860,7 +843,7 @@ end module cohesive_element_mod
         integer, intent(in) :: nPreDef  !! field variable number   not used now  
         integer, intent(in) :: nBlock   !! total solid element number
         integer, intent(in) :: nCrd     !! n deminsion
-        integer, intent(in) :: nDofEl   !! total dof number of one element
+        integer, intent(in) :: nDofEl   !! total dof number of one element = 24
         integer, intent(in) :: njprops  !! user defined properties (integer)
         integer, intent(in) :: nNode    !! total node number of one element  (real)
         integer, intent(in) :: nProps   !! user defined properties 
@@ -883,7 +866,7 @@ end module cohesive_element_mod
         real(kind=RK), intent(in) :: preDef(nBlock, nNode, nPreDef, nPred)  !! predefined field variable
         real(kind=RK), intent(in) :: dMassScaleFactor(nBlock)  !! the mass scale factors for each element
         real(kind=RK), intent(out) :: rhs(nBlock,nDofEl) !! the contributions of each element to the right-hand-side vector of the overall system of equations (e.g.internal force)
-        real(kind=RK), intent(out) :: aMass(nBlock,nDofEl,nDofEl)  !!  mass matrix of each element
+        real(kind=RK), intent(out) :: amass(nBlock,nDofEl,nDofEl)  !!  mass matrix of each element
         !real(kind=RK), intent(out) :: dTimeStable(nBlock) !! stable time increment of each element
         real(kind=RK), intent(out) :: svars(nBlock,nsvars) !! the solution-dependent state variables
         real(kind=RK), intent(in) ::  energy(nBlock,nElEnergy)  !! not computed
@@ -898,9 +881,10 @@ end module cohesive_element_mod
 
             call set_parameter(nBlock,nNode,nCrd,nDofEl,nProps,props)
 
-            if( lflags(iOpCode)==jMassCalc )then  
-                 call mass_matrix(nBlock,nNode,nCrd,nDofEl,coords,amass) 
-            else if ( lflags(iOpCode)==jIntForceAndDtStable)then  
+            if( lflags(iOpCode) == jMassCalc )then  
+                call mass_matrix(nBlock,nNode,nCrd,nDofEl,coords,amass) 
+            
+            else if ( lflags(iOpCode) == jIntForceAndDtStable) then  
                 do i = 1, nblock
                     call one_element_cohesive_force(i,nsvars,u(i,:),coords(i,:,:),svars(i,:),rhs(i,:))
                     write(6,*) 'node force'
